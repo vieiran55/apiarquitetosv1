@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model profiles {
+  id          String   @id @default(uuid())
+  cau         String   @unique @db.VarChar(10)
+  phone       String
+  dateOfBirth DateTime
+  city        String
+  state       States
+  updated_at  DateTime @updatedAt
+  created_at  DateTime @default(now())
+  user_id     String   @unique
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model projects {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  file        String
+  public      Boolean  @default(true)
+  updated_at  DateTime
+  created_at  DateTime @default(now())
+  user_id     String
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model users {
+  id         String     @id @default(uuid())
+  name       String
+  email      String     @unique
+  username   String     @unique
+  password   String
+  type       TypeUser?  @default(USER)
+  updated_at DateTime   @updatedAt
+  created_at DateTime   @default(now())
+  profiles   profiles?
+  projects   projects[]
+
+  @@map("users")
+}
+
+model forgot_password {
+  id         String   @id @default(uuid())
+  email      String
+  token      String
+  expires_at DateTime
+  created_at DateTime @default(now())
+  used       Boolean  @default(false)
+  user_id    String
+}
+
+enum States {
+  AC
+  AL
+  AP
+  AM
+  BA
+  CE
+  DF
+  ES
+  GO
+  MA
+  MT
+  MS
+  MG
+  PA
+  PB
+  PR
+  PE
+  PI
+  RJ
+  RN
+  RS
+  RO
+  RR
+  SC
+  SP
+  SE
+  TO
+}
+
+enum TypeUser {
+  ADMIN
+  USER
+}
