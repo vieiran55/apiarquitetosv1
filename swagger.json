@@ -1,0 +1,1073 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Arquitetos",
+        "version": "1.0",
+        "description": "Documentação da API de arquitetos - Projeto criado para a Aprimora Conhecimento",
+        "contact": {
+            "name": "Aprimora Conhecimento",
+            "email": "aprimoraconhecimentovoluntario@gmail.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3333/api/v1",
+            "description": "Servidor de desenvolvimento"
+        }
+    ],
+    "paths": {
+        "/users/auth": {
+            "post": {
+                "tag": ["users"],
+                "summary": "Rota de Login",
+                "description": "Rota utilizada para realizar login e obter um token JWT para autenticação",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLoginInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna as informações do usuário e o token JWT de autenticação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserLoginSuccess"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Retorna um erro caso o e-mail ou a senha estejam incorretos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserLoginError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/u/register": {
+            "post": {
+                "tag": ["users"],
+                "summary": "Rota de registro",
+                "description": "Rota utilizada para realizar registro do usuário",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRegisterInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna uma mensagem de usuário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredSuccessfully"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Retorna uma mensagem de erro caso o e-mail já tenha sido cadastrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tag": ["users"],
+                "summary": "Lista todos os usuários",
+                "description": "Rota para buscar e listar todos os usuários cadastrados",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna uma lista com os usuários cadastrados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Retorna uma mensagem de não autorizado, caso não seja passado o token de acesso nos headers da request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tag": ["users"],
+                "summary": "Lista um usuário",
+                "description": "Rota para buscar pelo ID e retorna um usuário cadastrado",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna um objeto com os dados do usuário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Retorna uma mensagem de não autorizado, caso não seja passado o token de acesso nos headers da request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/users/update/{id}": {
+            "put": {
+                "tag": ["users"],
+                "summary": "Atualiza um usuário",
+                "description": "Rota para atualizar um usuário baseado no seu ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdateInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna um objeto contendo uma mensagem de usuário atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensagem de usuário atualizado com sucesso"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Retorna uma mensagem de não autorizado caso não seja passado o token de acesso nos headers da request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/users/delete/{id}": {
+            "delete": {
+                "tag": ["users"],
+                "summary": "Deleta um usuário",
+                "description": "Rota para a deleção de um usuário baseado no seu ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna um objeto contendo uma mensagem de usuário deletado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensagem de usuário deletado com sucesso"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Retorna uma mensagem de não autorizado caso não seja passado o token de acesso nos headers da request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profiles/create": {
+            "post": {
+                "tag": ["profiles"],
+                "summary": "Rota de criação de perfil",
+                "description": "Rota utilizada para realizar a criação do perfil do usuário",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileCreateInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna uma mensagem de perfil criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredSuccessfully"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Retorna uma mensagem de erro caso o CAU já tenha sido registrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profiles": {
+            "get": {
+                "tag": ["profiles"],
+                "summary": "Rota para retornar os perfis",
+                "description": "Rota utilizada para retornar todos os perfis",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna um array com todos os perfis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Profile"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Retorna uma mensagem de erro usuário não esteja autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profiles/update/{id}": {
+            "put": {
+                "tag": ["profiles"],
+                "summary": "Atualiza um perfil",
+                "description": "Rota para atualizar um perfil baseado no seu ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileUpdateInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna um objeto contendo uma mensagem de perfil atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensagem de perfil atualizado com sucesso"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Retorna uma mensagem de não autorizado caso não seja passado o token de acesso nos headers da request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profiles/delete/{id}": {
+            "delete": {
+                "tag": ["profiles"],
+                "summary": "Deleta um perfil",
+                "description": "Rota para a deleção de um perfil baseado no seu ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna um objeto contendo uma mensagem de perfil deletado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensagem de perfil deletado com sucesso"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Retorna uma mensagem de não autorizado caso não seja passado o token de acesso nos headers da request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "summary": "Recupera a senha do usuário",
+                "description": "Rota para recuperação de senha do usuário",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgotPasswordInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna um objeto contendo uma mensagem de e-mail existente e o token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensagem de perfil deletado com sucesso"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "description": "Token para a recuperação da senha"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Retorna uma mensagem de e-mail não encontrado ou aviso para tentar novamente em alguns minutos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/update-password": {
+            "put": {
+                "summary": "Altera a senha do usuário",
+                "description": "Rota para alteração de senha do usuário",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePasswordInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna um objeto contendo uma mensagem de senha atualizada com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensagem de senha atualizada com sucesso"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Retorna uma mensagem de erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/register": {
+            "post": {
+                "tag": ["projetcs"],
+                "summary": "Rota de registro de projeto",
+                "description": "Rota utilizada para realizar registrar um projeto",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "an authorization headers",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Nome do projeto"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Descrição do projeto"
+                                    },
+                                    "file": {
+                                        "type": "file",
+                                        "format": "binary",
+                                        "description": "Arquivo a ser enviado (pdf, png, jpg, jpeg)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna uma mensagem de projeto registrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredSuccessfully"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Retorna uma mensagem de erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Retorna uma mensagem de não autorizado caso não seja passado o token de acesso nos headers da request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserUnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Retorna uma mensagem de erro interno de servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/UserRegisteredError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "UserLoginInput": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "E-mail do usuário"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Senha do usuário"
+                    }
+                }
+            },
+            "UserLoginSuccess": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Nome do usuário"
+                            },
+                            "username": {
+                                "type": "string",
+                                "description": "Nick do usuário"
+                            },
+                            "email": {
+                                "type": "string",
+                                "description": "E-mail do usuário"
+                            },
+                            "type": {
+                                "type": "string",
+                                "description": "Tipo do usuário"
+                            }
+                        }
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "Token JWT de autenticação"
+                    }
+                }
+            },
+            "UserLoginError": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "error"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "E-mail ou senha incorretos."
+                    }
+                }
+            },
+            "UserRegisterInput": {
+                "type": "object",
+                "required": ["name", "username", "email", "password"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Nome do usuário"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Nick do usuário"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "E-mail do usuário"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Senha do usuário"
+                    }
+                }
+            },
+            "UserRegisteredSuccessfully": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Mensagem de usuário criado com sucesso"
+                    }
+                }
+            },
+            "UserRegisteredError": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "description": "Mensagem de erro informando que o e-mail já está cadastrado"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "ID do usuário"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Nome do usuário"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "E-mail do usuário"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Nick do usuário"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Senha do usuário (encriptada)"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Tipo do usuário"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Data de atualização do usuário"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Data de criação do usuário"
+                    }
+                }
+            },
+            "UserUnauthorizedError": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "error"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "UserUpdateInput": {
+                "type": "object",
+                "required": ["name", "username", "email"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Nome do usuário"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Nick do usuário"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "E-mail do usuário"
+                    }
+                }
+            },
+            "ProfileCreateInput": {
+                "type": "object",
+                "required": ["cau", "phone", "dateOfBirth", "city", "state"],
+                "properties": {
+                    "cau": {
+                        "type": "string",
+                        "description": "CAU do usuário"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Telefone do usuário"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Data de nascimento do usuário"
+                    },
+                    "city": {
+                        "type": "string",
+                        "description": "Cidade do usuário"
+                    },
+                    "state": {
+                        "type": "string",
+                        "description": "Estado do usuário"
+                    }
+                }
+            },
+            "Profile": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "ID do perfil"
+                    },
+                    "cau": {
+                        "type": "string",
+                        "description": "CAU do usuário"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Telefone do usuário"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "description": "Data de nascimento do usuário"
+                    },
+                    "city": {
+                        "type": "string",
+                        "description": "Cidade do usuário (encriptada)"
+                    },
+                    "state": {
+                        "type": "string",
+                        "description": "Estado do usuário"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Data de atualização do perfil"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Data de criação do perfil"
+                    },
+                    "user_id": {
+                        "type": "strigg",
+                        "description": "ID do usuário"
+                    },
+                    "users": {
+                        "type": "object",
+                        "parameters": {
+                            "id": {
+                                "type": "strigg",
+                                "description": "ID do usuário"
+                            },
+                            "name": {
+                                "type": "strigg",
+                                "description": "Nome do usuário"
+                            },
+                            "username": {
+                                "type": "strigg",
+                                "description": "Nick do usuário"
+                            },
+                            "email": {
+                                "type": "strigg",
+                                "description": "E-mail do usuário"
+                            },
+                            "type": {
+                                "type": "strigg",
+                                "description": "Tipo do usuário"
+                            }
+                        }
+                    }
+                }
+            },
+            "ProfileUpdateInput": {
+                "type": "object",
+                "required": ["cau", "phone", "dateOfBirth", "city", "state"],
+                "properties": {
+                    "cau": {
+                        "type": "string",
+                        "description": "CAU do usuário"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Telefone do usuário"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "description": "Data de nascimento do usuário"
+                    },
+                    "city": {
+                        "type": "string",
+                        "description": "Cidade do usuário (encriptada)"
+                    },
+                    "state": {
+                        "type": "string",
+                        "description": "Estado do usuário"
+                    }
+                }
+            },
+            "ForgotPasswordInput": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "E-mail do usuário"
+                    }
+                }
+            },
+            "UpdatePasswordInput": {
+                "type": "object",
+                "required": ["email", "token", "password"],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "E-mail do usuário"
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "Token de alteração enviado para o e-mail"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Nova senha do usuário"
+                    }
+                }
+            },
+            "ProjectRegisterInput": {
+                "type": "object",
+                "required": ["name", "description"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Nome do projeto"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Descrição do projeto"
+                    }
+                }
+            }
+        }
+    }
+}
